@@ -2,14 +2,17 @@ import useSWR from 'swr'
 import useSWRMutation from 'swr/mutation'
 import { fetcher, mutationFetcher, updateFetcher } from '@/lib/swr/fetcher'
 import { Database } from '@/types/database'
+import { useAuth } from '@/contexts/auth-context'
 
 type QuestSession = Database['public']['Tables']['quest_sessions']['Row']
 type QuestSessionInsert = Database['public']['Tables']['quest_sessions']['Insert']
 type QuestSessionUpdate = Database['public']['Tables']['quest_sessions']['Update']
 
 export function useActiveQuest() {
+  const { user } = useAuth()
+  
   const { data, error, isLoading, mutate } = useSWR<QuestSession | null>(
-    '/api/quest-sessions',
+    user ? '/api/quest-sessions' : null,
     fetcher,
     {
       // Handle 404 as no active quest (not an error)

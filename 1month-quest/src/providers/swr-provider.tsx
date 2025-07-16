@@ -21,6 +21,16 @@ export default function SWRProvider({ children }: SWRProviderProps) {
           // Don't retry on 4xx errors (client errors)
           return error.status >= 500
         },
+        onErrorRetry: (error, key, config, revalidate, { retryCount }) => {
+          // Don't retry on 401 (unauthorized) errors
+          if (error.status === 401) return
+          
+          // Only retry up to 3 times
+          if (retryCount >= 3) return
+          
+          // Retry after 5 seconds
+          setTimeout(() => revalidate({ retryCount }), 5000)
+        },
         onError: (error) => {
           console.error('SWR Error:', error)
           // Don't show console errors for 404s when no active quest exists

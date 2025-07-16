@@ -2,18 +2,21 @@ import useSWR from 'swr'
 import useSWRMutation from 'swr/mutation'
 import { fetcher, mutationFetcher, updateFetcher, deleteFetcher, patchFetcher } from '@/lib/swr/fetcher'
 import { Database } from '@/types/database'
+import { useAuth } from '@/contexts/auth-context'
 
 type Task = Database['public']['Tables']['tasks']['Row']
 type TaskInsert = Database['public']['Tables']['tasks']['Insert']
 type TaskUpdate = Database['public']['Tables']['tasks']['Update']
 
 export function useTasks(questSessionId?: string, date?: string) {
+  const { user } = useAuth()
+  
   const params = new URLSearchParams()
   if (questSessionId) params.append('quest_session_id', questSessionId)
   if (date) params.append('date', date)
   
   const queryString = params.toString()
-  const key = queryString ? `/api/tasks?${queryString}` : '/api/tasks'
+  const key = user ? (queryString ? `/api/tasks?${queryString}` : '/api/tasks') : null
 
   const { data, error, isLoading, mutate } = useSWR<Task[]>(key, fetcher)
 
@@ -115,9 +118,12 @@ export function useToggleTask(taskId: string) {
 
 // Optimistic update helper
 export function useTaskMutations(questSessionId?: string, date?: string) {
+  const { user } = useAuth()
   const { mutate } = useTasks(questSessionId, date)
 
   const optimisticUpdate = (updatedTask: Task) => {
+    if (!user) return
+    
     mutate(
       (currentTasks) => {
         if (!currentTasks) return currentTasks
@@ -130,6 +136,8 @@ export function useTaskMutations(questSessionId?: string, date?: string) {
   }
 
   const optimisticAdd = (newTask: Task) => {
+    if (!user) return
+    
     mutate(
       (currentTasks) => {
         if (!currentTasks) return [newTask]
@@ -140,6 +148,8 @@ export function useTaskMutations(questSessionId?: string, date?: string) {
   }
 
   const optimisticDelete = (taskId: string) => {
+    if (!user) return
+    
     mutate(
       (currentTasks) => {
         if (!currentTasks) return currentTasks

@@ -7,6 +7,7 @@ import QuestCreateForm from '@/components/quest/quest-create-form'
 import TaskList from '@/components/tasks/task-list'
 import { useActiveQuest } from '@/hooks/useQuests'
 import { useTasks } from '@/hooks/useTasks'
+import Link from 'next/link'
 
 export default function Home() {
   const [showQuestForm, setShowQuestForm] = useState(false)
@@ -49,15 +50,32 @@ export default function Home() {
                 </h1>
                 
                 {activeQuest ? (
-                  <div className="bg-blue-50 p-4 rounded-lg mb-6">
-                    <h3 className="text-lg font-semibold text-blue-900 mb-2">
-                      現在のクエスト: {activeQuest.title}
-                    </h3>
-                    <p className="text-blue-700 text-sm mb-2">
-                      {activeQuest.description}
-                    </p>
-                    <div className="text-blue-600 text-sm">
-                      期間: {activeQuest.start_date} ～ {activeQuest.end_date}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div className="bg-blue-50 p-4 rounded-lg">
+                      <h3 className="text-lg font-semibold text-blue-900 mb-2">
+                        現在のクエスト: {activeQuest.title}
+                      </h3>
+                      <p className="text-blue-700 text-sm mb-2">
+                        {activeQuest.description}
+                      </p>
+                      <div className="text-blue-600 text-sm">
+                        期間: {activeQuest.start_date} ～ {activeQuest.end_date}
+                      </div>
+                    </div>
+                    
+                    <div className="bg-green-50 p-4 rounded-lg">
+                      <h3 className="text-lg font-semibold text-green-900 mb-2">
+                        今日のタスク
+                      </h3>
+                      <p className="text-green-700 text-sm mb-4">
+                        今日やるべきタスクを確認し、進捗を更新しましょう。
+                      </p>
+                      <Link 
+                        href="/checkin"
+                        className="inline-block bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors"
+                      >
+                        チェックインする
+                      </Link>
                     </div>
                   </div>
                 ) : (
