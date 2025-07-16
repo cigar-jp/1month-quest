@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
       tasks = await getTasks(user.id, questSessionId || undefined)
     }
     
-    return NextResponse.json(tasks)
+    return NextResponse.json(tasks || [])
   } catch (error) {
     console.error('Error fetching tasks:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })

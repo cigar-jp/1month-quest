@@ -10,13 +10,21 @@ type QuestSessionUpdate = Database['public']['Tables']['quest_sessions']['Update
 export function useActiveQuest() {
   const { data, error, isLoading, mutate } = useSWR<QuestSession | null>(
     '/api/quest-sessions',
-    fetcher
+    fetcher,
+    {
+      // Handle 404 as no active quest (not an error)
+      onError: (error) => {
+        if (error.status !== 404) {
+          console.error('Error fetching active quest:', error)
+        }
+      }
+    }
   )
 
   return {
-    quest: data,
+    quest: error?.status === 404 ? null : data,
     isLoading,
-    isError: error,
+    isError: error?.status !== 404 ? error : null,
     mutate,
   }
 }

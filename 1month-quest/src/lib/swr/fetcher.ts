@@ -2,10 +2,17 @@ export const fetcher = async (url: string) => {
   const response = await fetch(url)
   
   if (!response.ok) {
-    const error = new Error('An error occurred while fetching the data.')
+    let errorInfo = {}
+    try {
+      errorInfo = await response.json()
+    } catch {
+      errorInfo = { message: response.statusText }
+    }
+    
+    const error = new Error(`HTTP ${response.status}: ${errorInfo.error || errorInfo.message || 'An error occurred while fetching the data.'}`)
     // Attach extra info to the error object
-    error.info = await response.json()
-    error.status = response.status
+    ;(error as any).info = errorInfo
+    ;(error as any).status = response.status
     throw error
   }
   
@@ -22,9 +29,16 @@ export const mutationFetcher = async (url: string, { arg }: { arg: any }) => {
   })
   
   if (!response.ok) {
-    const error = new Error('An error occurred while mutating the data.')
-    error.info = await response.json()
-    error.status = response.status
+    let errorInfo = {}
+    try {
+      errorInfo = await response.json()
+    } catch {
+      errorInfo = { message: response.statusText }
+    }
+    
+    const error = new Error(`HTTP ${response.status}: ${errorInfo.error || errorInfo.message || 'An error occurred while mutating the data.'}`)
+    ;(error as any).info = errorInfo
+    ;(error as any).status = response.status
     throw error
   }
   
@@ -41,9 +55,16 @@ export const updateFetcher = async (url: string, { arg }: { arg: any }) => {
   })
   
   if (!response.ok) {
-    const error = new Error('An error occurred while updating the data.')
-    error.info = await response.json()
-    error.status = response.status
+    let errorInfo = {}
+    try {
+      errorInfo = await response.json()
+    } catch {
+      errorInfo = { message: response.statusText }
+    }
+    
+    const error = new Error(`HTTP ${response.status}: ${errorInfo.error || errorInfo.message || 'An error occurred while updating the data.'}`)
+    ;(error as any).info = errorInfo
+    ;(error as any).status = response.status
     throw error
   }
   
@@ -56,9 +77,16 @@ export const deleteFetcher = async (url: string) => {
   })
   
   if (!response.ok) {
-    const error = new Error('An error occurred while deleting the data.')
-    error.info = await response.json()
-    error.status = response.status
+    let errorInfo = {}
+    try {
+      errorInfo = await response.json()
+    } catch {
+      errorInfo = { message: response.statusText }
+    }
+    
+    const error = new Error(`HTTP ${response.status}: ${errorInfo.error || errorInfo.message || 'An error occurred while deleting the data.'}`)
+    ;(error as any).info = errorInfo
+    ;(error as any).status = response.status
     throw error
   }
   
@@ -75,9 +103,16 @@ export const patchFetcher = async (url: string, { arg }: { arg: any }) => {
   })
   
   if (!response.ok) {
-    const error = new Error('An error occurred while patching the data.')
-    error.info = await response.json()
-    error.status = response.status
+    let errorInfo = {}
+    try {
+      errorInfo = await response.json()
+    } catch {
+      errorInfo = { message: response.statusText }
+    }
+    
+    const error = new Error(`HTTP ${response.status}: ${errorInfo.error || errorInfo.message || 'An error occurred while patching the data.'}`)
+    ;(error as any).info = errorInfo
+    ;(error as any).status = response.status
     throw error
   }
   

@@ -13,6 +13,11 @@ export async function GET(request: NextRequest) {
     }
     
     const activeSession = await getActiveQuestSession(user.id)
+    
+    if (!activeSession) {
+      return NextResponse.json({ error: 'No active quest session found' }, { status: 404 })
+    }
+    
     return NextResponse.json(activeSession)
   } catch (error) {
     console.error('Error fetching quest session:', error)
