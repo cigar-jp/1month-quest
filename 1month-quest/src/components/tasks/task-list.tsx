@@ -4,84 +4,28 @@ import { useState } from 'react'
 import { Database } from '@/types/database'
 import TaskItem from './task-item'
 import TaskCreateForm from './task-create-form'
+import { useTaskMutations } from '@/hooks/useTasks'
 
 type Task = Database['public']['Tables']['tasks']['Row']
 
 interface TaskListProps {
   tasks: Task[]
-  onTaskUpdate: (task: Task) => void
-  onTaskDelete: (taskId: string) => void
-  onTaskCreate: (task: Task) => void
   questSessionId?: string
   selectedDate?: string
 }
 
 export default function TaskList({
   tasks,
-  onTaskUpdate,
-  onTaskDelete,
-  onTaskCreate,
   questSessionId,
   selectedDate
 }: TaskListProps) {
   const [showCreateForm, setShowCreateForm] = useState(false)
+  const { optimisticUpdate, optimisticAdd, optimisticDelete, revalidate } = useTaskMutations(questSessionId, selectedDate)
 
-  const handleTaskToggle = async (taskId: string, completed: boolean) => {
-    try {
-      const response = await fetch(`/api/tasks/${taskId}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ completed }),
-      })
-
-      if (!response.ok) {
-        throw new Error('Failed to update task')
-      }
-
-      const updatedTask = await response.json()
-      onTaskUpdate(updatedTask)
-    } catch (error) {
-      console.error('Error toggling task:', error)
-    }
-  }
-
-  const handleTaskEdit = async (taskId: string, data: Partial<Task>) => {
-    try {
-      const response = await fetch(`/api/tasks/${taskId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      })
-
-      if (!response.ok) {
-        throw new Error('Failed to update task')
-      }
-
-      const updatedTask = await response.json()
-      onTaskUpdate(updatedTask)
-    } catch (error) {
-      console.error('Error updating task:', error)
-    }
-  }
-
-  const handleTaskDelete = async (taskId: string) => {
-    try {
-      const response = await fetch(`/api/tasks/${taskId}`, {
-        method: 'DELETE',
-      })
-
-      if (!response.ok) {
-        throw new Error('Failed to delete task')
-      }
-
-      onTaskDelete(taskId)
-    } catch (error) {
-      console.error('Error deleting task:', error)
-    }
+  const handleTaskCreate = (newTask: Task) => {
+    optimisticAdd(newTask)
+    setShowCreateForm(false)
+    revalidate()
   }
 
   const completedTasks = tasks.filter(task => task.completed)
@@ -123,9 +67,8 @@ export default function TaskList({
                 <TaskItem
                   key={task.id}
                   task={task}
-                  onToggle={handleTaskToggle}
-                  onEdit={handleTaskEdit}
-                  onDelete={handleTaskDelete}
+                  onOptimisticUpdate={optimisticUpdate}
+                  onOptimisticDelete={optimisticDelete}
                 />
               ))}
             </div>
@@ -142,9 +85,8 @@ export default function TaskList({
                 <TaskItem
                   key={task.id}
                   task={task}
-                  onToggle={handleTaskToggle}
-                  onEdit={handleTaskEdit}
-                  onDelete={handleTaskDelete}
+                  onOptimisticUpdate={optimisticUpdate}
+                  onOptimisticDelete={optimisticDelete}
                 />
               ))}
             </div>
@@ -161,10 +103,7 @@ export default function TaskList({
 
       {showCreateForm && (
         <TaskCreateForm
-          onSuccess={(task) => {
-            onTaskCreate(task)
-            setShowCreateForm(false)
-          }}
+          onSuccess={handleTaskCreate}
           onCancel={() => setShowCreateForm(false)}
           questSessionId={questSessionId}
           defaultDate={selectedDate}

@@ -2,29 +2,71 @@
 
 import { useState } from 'react'
 import { Database } from '@/types/database'
+import { useToggleTask, useUpdateTask, useDeleteTask } from '@/hooks/useTasks'
 
 type Task = Database['public']['Tables']['tasks']['Row']
 
 interface TaskItemProps {
   task: Task
-  onToggle: (taskId: string, completed: boolean) => void
-  onEdit: (taskId: string, data: Partial<Task>) => void
-  onDelete: (taskId: string) => void
+  onOptimisticUpdate: (task: Task) => void
+  onOptimisticDelete: (taskId: string) => void
 }
 
-export default function TaskItem({ task, onToggle, onEdit, onDelete }: TaskItemProps) {
+export default function TaskItem({ task, onOptimisticUpdate, onOptimisticDelete }: TaskItemProps) {
   const [isEditing, setIsEditing] = useState(false)
   const [editTitle, setEditTitle] = useState(task.title)
   const [editDescription, setEditDescription] = useState(task.description || '')
   const [editPriority, setEditPriority] = useState(task.priority)
 
-  const handleSave = () => {
-    onEdit(task.id, {
+  const { toggleTask, isToggling } = useToggleTask(task.id)
+  const { updateTask, isUpdating } = useUpdateTask(task.id)
+  const { deleteTask, isDeleting } = useDeleteTask(task.id)
+
+  const handleToggle = async (completed: boolean) => {
+    const optimisticTask = { ...task, completed }
+    onOptimisticUpdate(optimisticTask)
+    
+    try {
+      await toggleTask(completed)
+    } catch (error) {
+      // Revert on error
+      onOptimisticUpdate(task)
+    }
+  }
+
+  const handleSave = async () => {
+    const optimisticTask = { 
+      ...task, 
       title: editTitle,
       description: editDescription,
       priority: editPriority,
-    })
-    setIsEditing(false)
+    }
+    onOptimisticUpdate(optimisticTask)
+    
+    try {
+      await updateTask({
+        title: editTitle,
+        description: editDescription,
+        priority: editPriority,
+      })
+      setIsEditing(false)
+    } catch (error) {
+      // Revert on error
+      onOptimisticUpdate(task)
+    }
+  }
+
+  const handleDelete = async () => {
+    if (window.confirm('このタスクを削除してもよろしいですか？')) {
+      onOptimisticDelete(task.id)
+      
+      try {
+        await deleteTask()
+      } catch (error) {
+        // Revert on error - would need more complex state management
+        console.error('Delete failed:', error)
+      }
+    }
   }
 
   const handleCancel = () => {
@@ -110,8 +152,9 @@ export default function TaskItem({ task, onToggle, onEdit, onDelete }: TaskItemP
         <input
           type="checkbox"
           checked={task.completed}
-          onChange={(e) => onToggle(task.id, e.target.checked)}
-          className="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+          onChange={(e) => handleToggle(e.target.checked)}
+          disabled={isToggling}
+          className="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded disabled:opacity-50"
         />
         
         <div className="flex-1 min-w-0">
@@ -147,7 +190,8 @@ export default function TaskItem({ task, onToggle, onEdit, onDelete }: TaskItemP
         <div className="flex gap-1">
           <button
             onClick={() => setIsEditing(true)}
-            className="p-1 text-gray-400 hover:text-blue-600 transition-colors"
+            disabled={isUpdating}
+            className="p-1 text-gray-400 hover:text-blue-600 transition-colors disabled:opacity-50"
             title="編集"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -156,8 +200,9 @@ export default function TaskItem({ task, onToggle, onEdit, onDelete }: TaskItemP
           </button>
           
           <button
-            onClick={() => onDelete(task.id)}
-            className="p-1 text-gray-400 hover:text-red-600 transition-colors"
+            onClick={handleDelete}
+            disabled={isDeleting}
+            className="p-1 text-gray-400 hover:text-red-600 transition-colors disabled:opacity-50"
             title="削除"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

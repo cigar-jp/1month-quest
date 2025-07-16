@@ -1,81 +1,29 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import ProtectedRoute from '@/components/auth/protected-route'
 import Header from '@/components/layout/header'
 import QuestCreateForm from '@/components/quest/quest-create-form'
 import TaskList from '@/components/tasks/task-list'
-import { useAuth } from '@/contexts/auth-context'
-import { Database } from '@/types/database'
-
-type QuestSession = Database['public']['Tables']['quest_sessions']['Row']
-type Task = Database['public']['Tables']['tasks']['Row']
+import { useActiveQuest } from '@/hooks/useQuests'
+import { useTasks } from '@/hooks/useTasks'
 
 export default function Home() {
   const [showQuestForm, setShowQuestForm] = useState(false)
-  const [activeQuest, setActiveQuest] = useState<QuestSession | null>(null)
-  const [todayTasks, setTodayTasks] = useState<Task[]>([])
-  const [loading, setLoading] = useState(true)
-  const { user } = useAuth()
-
   const today = new Date().toISOString().split('T')[0]
 
-  useEffect(() => {
-    if (user) {
-      fetchActiveQuest()
-      fetchTodayTasks()
-    }
-  }, [user])
-
-  const fetchActiveQuest = async () => {
-    try {
-      const response = await fetch('/api/quest-sessions')
-      if (response.ok) {
-        const quest = await response.json()
-        setActiveQuest(quest)
-      }
-    } catch (error) {
-      console.error('Error fetching active quest:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const fetchTodayTasks = async () => {
-    try {
-      const response = await fetch(`/api/tasks?date=${today}`)
-      if (response.ok) {
-        const tasks = await response.json()
-        setTodayTasks(tasks)
-      }
-    } catch (error) {
-      console.error('Error fetching today tasks:', error)
-    }
-  }
+  const { quest: activeQuest, isLoading: questLoading, mutate: mutateQuest } = useActiveQuest()
+  const { tasks: todayTasks, isLoading: tasksLoading, mutate: mutateTasks } = useTasks(activeQuest?.id, today)
 
   const handleQuestCreated = () => {
     setShowQuestForm(false)
-    fetchActiveQuest()
-    fetchTodayTasks()
+    mutateQuest() // Revalidate quest data
+    mutateTasks() // Revalidate tasks data
   }
 
-  const handleTaskUpdate = (updatedTask: Task) => {
-    setTodayTasks(prev => prev.map(task => 
-      task.id === updatedTask.id ? updatedTask : task
-    ))
-  }
+  const isLoading = questLoading || tasksLoading
 
-  const handleTaskDelete = (taskId: string) => {
-    setTodayTasks(prev => prev.filter(task => task.id !== taskId))
-  }
-
-  const handleTaskCreate = (newTask: Task) => {
-    if (newTask.date === today) {
-      setTodayTasks(prev => [...prev, newTask])
-    }
-  }
-
-  if (loading) {
+  if (isLoading) {
     return (
       <ProtectedRoute>
         <div className="min-h-screen bg-gray-50">
@@ -136,9 +84,6 @@ export default function Home() {
               <div className="px-4 py-5 sm:p-6">
                 <TaskList
                   tasks={todayTasks}
-                  onTaskUpdate={handleTaskUpdate}
-                  onTaskDelete={handleTaskDelete}
-                  onTaskCreate={handleTaskCreate}
                   questSessionId={activeQuest?.id}
                   selectedDate={today}
                 />
