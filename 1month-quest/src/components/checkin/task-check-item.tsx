@@ -164,12 +164,14 @@ export default function TaskCheckItem({
                   min="0"
                 />
                 <button
+                  type="button"
                   onClick={handleTimeSubmit}
                   className="px-2 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700"
                 >
                   保存
                 </button>
                 <button
+                  type="button"
                   onClick={() => {
                     setIsTimeEditing(false);
                     setActualTime(task.actual_time?.toString() || "");
@@ -186,6 +188,7 @@ export default function TaskCheckItem({
                 </span>
                 {isToday && task.completed && (
                   <button
+                    type="button"
                     onClick={() => setIsTimeEditing(true)}
                     className="text-blue-600 hover:text-blue-800"
                   >
@@ -218,7 +221,10 @@ export default function TaskCheckItem({
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
+                role="img"
+                aria-label="完了済み"
               >
+                <title>完了済み</title>
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -234,7 +240,10 @@ export default function TaskCheckItem({
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
+                role="img"
+                aria-label="未完了"
               >
+                <title>未完了</title>
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"

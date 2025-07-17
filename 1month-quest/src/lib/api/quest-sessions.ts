@@ -1,7 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import type { Database } from "@/types/database";
 
-type QuestSession = Database["public"]["Tables"]["quest_sessions"]["Row"];
 type QuestSessionInsert =
   Database["public"]["Tables"]["quest_sessions"]["Insert"];
 type QuestSessionUpdate =

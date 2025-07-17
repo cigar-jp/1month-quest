@@ -129,8 +129,14 @@ export default function TaskItem({
           />
 
           <div className="flex items-center gap-4">
-            <label className="text-sm font-medium text-gray-700">優先度:</label>
+            <label
+              htmlFor="priority-select"
+              className="text-sm font-medium text-gray-700"
+            >
+              優先度:
+            </label>
             <select
+              id="priority-select"
               value={editPriority}
               onChange={(e) => setEditPriority(Number(e.target.value))}
               className="px-3 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -143,12 +149,14 @@ export default function TaskItem({
 
           <div className="flex gap-2">
             <button
+              type="button"
               onClick={handleSave}
               className="px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm"
             >
               保存
             </button>
             <button
+              type="button"
               onClick={handleCancel}
               className="px-3 py-1 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 text-sm"
             >
@@ -209,6 +217,7 @@ export default function TaskItem({
 
         <div className="flex gap-1">
           <button
+            type="button"
             onClick={() => setIsEditing(true)}
             disabled={isUpdating}
             className="p-1 text-gray-400 hover:text-blue-600 transition-colors disabled:opacity-50"
@@ -219,7 +228,10 @@ export default function TaskItem({
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
+              role="img"
+              aria-label="編集"
             >
+              <title>編集</title>
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -230,6 +242,7 @@ export default function TaskItem({
           </button>
 
           <button
+            type="button"
             onClick={handleDelete}
             disabled={isDeleting}
             className="p-1 text-gray-400 hover:text-red-600 transition-colors disabled:opacity-50"
@@ -240,7 +253,10 @@ export default function TaskItem({
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
+              role="img"
+              aria-label="削除"
             >
+              <title>削除</title>
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
