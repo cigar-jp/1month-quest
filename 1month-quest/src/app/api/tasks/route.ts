@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { createTask, getTasks, getTasksByDate } from '@/lib/api/tasks'
+import { Database } from '@/types/database'
+
+type Task = Database['public']['Tables']['tasks']['Row']
 
 export async function GET(request: NextRequest) {
   try {
@@ -15,7 +18,7 @@ export async function GET(request: NextRequest) {
     const questSessionId = searchParams.get('quest_session_id')
     const date = searchParams.get('date')
     
-    let tasks
+    let tasks: Task[]
     if (date) {
       tasks = await getTasksByDate(user.id, date)
     } else {
