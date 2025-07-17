@@ -1,13 +1,13 @@
-'use client'
+"use client";
 
-import ProtectedRoute from '@/components/auth/protected-route'
-import Header from '@/components/layout/header'
-import DailyCheckin from '@/components/checkin/daily-checkin'
-import { useActiveQuest } from '@/hooks/useQuests'
-import Link from 'next/link'
+import Link from "next/link";
+import ProtectedRoute from "@/components/auth/protected-route";
+import DailyCheckin from "@/components/checkin/daily-checkin";
+import Header from "@/components/layout/header";
+import { useActiveQuest } from "@/hooks/useQuests";
 
 export default function CheckinPage() {
-  const { quest, isLoading } = useActiveQuest()
+  const { quest, isLoading } = useActiveQuest();
 
   if (isLoading) {
     return (
@@ -19,7 +19,7 @@ export default function CheckinPage() {
           </div>
         </div>
       </ProtectedRoute>
-    )
+    );
   }
 
   return (
@@ -42,8 +42,21 @@ export default function CheckinPage() {
           ) : (
             <div className="bg-white rounded-lg shadow-sm p-8 text-center">
               <div className="mb-6">
-                <svg className="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                <svg
+                  className="w-16 h-16 text-gray-400 mx-auto mb-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  role="img"
+                  aria-label="クエスト未作成アイコン"
+                >
+                  <title>クエスト未作成アイコン</title>
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"
+                  />
                 </svg>
                 <h2 className="text-xl font-semibold text-gray-900 mb-2">
                   クエストが開始されていません
@@ -51,7 +64,7 @@ export default function CheckinPage() {
                 <p className="text-gray-600 mb-6">
                   日次チェックインを使用するには、まず30日クエストを開始してください。
                 </p>
-                <Link 
+                <Link
                   href="/"
                   className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
                 >
@@ -63,5 +76,5 @@ export default function CheckinPage() {
         </main>
       </div>
     </ProtectedRoute>
-  )
+  );
 }

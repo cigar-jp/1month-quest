@@ -1,18 +1,20 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { useTasks } from '@/hooks/useTasks'
-import { useActiveQuest } from '@/hooks/useQuests'
-import { useAuth } from '@/contexts/auth-context'
-import { format } from 'date-fns'
-import { ja } from 'date-fns/locale'
-import TaskCheckItem from './task-check-item'
+import { format } from "date-fns";
+import { ja } from "date-fns/locale";
+import { useState } from "react";
+import { useAuth } from "@/contexts/auth-context";
+import { useActiveQuest } from "@/hooks/useQuests";
+import { useTasks } from "@/hooks/useTasks";
+import TaskCheckItem from "./task-check-item";
 
 export default function DailyCheckin() {
-  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0])
-  const { user } = useAuth()
-  const { quest } = useActiveQuest()
-  const { tasks, isLoading } = useTasks(quest?.id, selectedDate)
+  const [selectedDate, setSelectedDate] = useState(
+    new Date().toISOString().split("T")[0],
+  );
+  const { user } = useAuth();
+  const { quest } = useActiveQuest();
+  const { tasks, isLoading } = useTasks(quest?.id, selectedDate);
 
   // Don't render until user is authenticated
   if (!user) {
@@ -20,36 +22,39 @@ export default function DailyCheckin() {
       <div className="bg-white rounded-lg shadow-sm p-6 text-center">
         <p className="text-gray-500">認証が必要です</p>
       </div>
-    )
+    );
   }
 
-  const completedTasks = tasks.filter(task => task.completed)
-  const completionRate = tasks.length > 0 ? Math.round((completedTasks.length / tasks.length) * 100) : 0
+  const completedTasks = tasks.filter((task) => task.completed);
+  const completionRate =
+    tasks.length > 0
+      ? Math.round((completedTasks.length / tasks.length) * 100)
+      : 0;
 
-  const today = new Date().toISOString().split('T')[0]
-  const isToday = selectedDate === today
-  const isPast = selectedDate < today
-  const isFuture = selectedDate > today
+  const today = new Date().toISOString().split("T")[0];
+  const isToday = selectedDate === today;
+  const isPast = selectedDate < today;
+  const isFuture = selectedDate > today;
 
   const formatDate = (dateString: string) => {
-    const date = new Date(dateString)
-    return format(date, 'M月d日(E)', { locale: ja })
-  }
+    const date = new Date(dateString);
+    return format(date, "M月d日(E)", { locale: ja });
+  };
 
   const getDateStatus = () => {
-    if (isToday) return { color: 'text-blue-600', label: '今日' }
-    if (isPast) return { color: 'text-gray-500', label: '過去' }
-    return { color: 'text-orange-500', label: '未来' }
-  }
+    if (isToday) return { color: "text-blue-600", label: "今日" };
+    if (isPast) return { color: "text-gray-500", label: "過去" };
+    return { color: "text-orange-500", label: "未来" };
+  };
 
-  const dateStatus = getDateStatus()
+  const dateStatus = getDateStatus();
 
   if (!quest) {
     return (
       <div className="bg-white rounded-lg shadow-sm p-6 text-center">
         <p className="text-gray-500">クエストを開始してください</p>
       </div>
-    )
+    );
   }
 
   return (
@@ -57,7 +62,9 @@ export default function DailyCheckin() {
       {/* Header */}
       <div className="p-6 border-b border-gray-200">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-semibold text-gray-900">日次チェックイン</h2>
+          <h2 className="text-xl font-semibold text-gray-900">
+            日次チェックイン
+          </h2>
           <div className="flex items-center gap-2">
             <span className={`text-sm font-medium ${dateStatus.color}`}>
               {dateStatus.label}
@@ -87,9 +94,7 @@ export default function DailyCheckin() {
         {/* Progress Summary */}
         <div className="bg-gray-50 rounded-lg p-4">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-gray-700">
-              進捗状況
-            </span>
+            <span className="text-sm font-medium text-gray-700">進捗状況</span>
             <span className="text-sm font-semibold text-gray-900">
               {completedTasks.length} / {tasks.length} 完了
             </span>
@@ -129,9 +134,7 @@ export default function DailyCheckin() {
           <div className="text-center py-8 text-gray-500">
             <p>この日にはタスクがありません</p>
             {isToday && (
-              <p className="text-sm mt-2">
-                新しいタスクを追加してください
-              </p>
+              <p className="text-sm mt-2">新しいタスクを追加してください</p>
             )}
           </div>
         )}
@@ -141,7 +144,8 @@ export default function DailyCheckin() {
       <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
         <div className="flex items-center justify-between text-sm text-gray-600">
           <span>
-            クエスト期間: {formatDate(quest.start_date)} 〜 {formatDate(quest.end_date)}
+            クエスト期間: {formatDate(quest.start_date)} 〜{" "}
+            {formatDate(quest.end_date)}
           </span>
           {isToday && (
             <span className="text-blue-600 font-medium">
@@ -151,5 +155,5 @@ export default function DailyCheckin() {
         </div>
       </div>
     </div>
-  )
+  );
 }

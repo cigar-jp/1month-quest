@@ -1,58 +1,61 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { useAuth } from '@/contexts/auth-context'
+import { useState } from "react";
+import { useAuth } from "@/contexts/auth-context";
 
 interface AuthFormProps {
-  mode: 'signin' | 'signup'
-  onToggleMode: () => void
+  mode: "signin" | "signup";
+  onToggleMode: () => void;
 }
 
 export default function AuthForm({ mode, onToggleMode }: AuthFormProps) {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const { signIn, signUp } = useAuth()
+  const { signIn, signUp } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
-    setError('')
+    e.preventDefault();
+    setLoading(true);
+    setError("");
 
     try {
-      const { error } = mode === 'signin' 
-        ? await signIn(email, password)
-        : await signUp(email, password)
+      const { error } =
+        mode === "signin"
+          ? await signIn(email, password)
+          : await signUp(email, password);
 
       if (error) {
-        setError(error.message)
-      } else if (mode === 'signup') {
-        setError('確認メールを送信しました。メールをご確認ください。')
+        setError(error.message);
+      } else if (mode === "signup") {
+        setError("確認メールを送信しました。メールをご確認ください。");
       }
-    } catch (err) {
-      setError('予期しないエラーが発生しました。')
+    } catch (_err) {
+      setError("予期しないエラーが発生しました。");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            {mode === 'signin' ? 'アカウントにログイン' : 'アカウントを作成'}
+            {mode === "signin" ? "アカウントにログイン" : "アカウントを作成"}
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            {mode === 'signin' ? 'アカウントをお持ちでない方は ' : 'すでにアカウントをお持ちの方は '}
+            {mode === "signin"
+              ? "アカウントをお持ちでない方は "
+              : "すでにアカウントをお持ちの方は "}
             <button
               type="button"
               onClick={onToggleMode}
               className="font-medium text-blue-600 hover:text-blue-500"
             >
-              {mode === 'signin' ? '新規登録' : 'ログイン'}
+              {mode === "signin" ? "新規登録" : "ログイン"}
             </button>
           </p>
         </div>
@@ -60,7 +63,10 @@ export default function AuthForm({ mode, onToggleMode }: AuthFormProps) {
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="space-y-4">
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700"
+              >
                 メールアドレス
               </label>
               <input
@@ -77,14 +83,19 @@ export default function AuthForm({ mode, onToggleMode }: AuthFormProps) {
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700"
+              >
                 パスワード
               </label>
               <input
                 id="password"
                 name="password"
                 type="password"
-                autoComplete={mode === 'signin' ? 'current-password' : 'new-password'}
+                autoComplete={
+                  mode === "signin" ? "current-password" : "new-password"
+                }
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -96,7 +107,9 @@ export default function AuthForm({ mode, onToggleMode }: AuthFormProps) {
           </div>
 
           {error && (
-            <div className={`text-sm ${error.includes('確認メール') ? 'text-green-600' : 'text-red-600'}`}>
+            <div
+              className={`text-sm ${error.includes("確認メール") ? "text-green-600" : "text-red-600"}`}
+            >
               {error}
             </div>
           )}
@@ -107,11 +120,11 @@ export default function AuthForm({ mode, onToggleMode }: AuthFormProps) {
               disabled={loading}
               className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? '処理中...' : (mode === 'signin' ? 'ログイン' : '登録')}
+              {loading ? "処理中..." : mode === "signin" ? "ログイン" : "登録"}
             </button>
           </div>
         </form>
       </div>
     </div>
-  )
+  );
 }

@@ -1,41 +1,42 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { Database } from '@/types/database'
-import TaskItem from './task-item'
-import TaskCreateForm from './task-create-form'
-import { useTaskMutations } from '@/hooks/useTasks'
+import { useState } from "react";
+import { useTaskMutations } from "@/hooks/useTasks";
+import type { Database } from "@/types/database";
+import TaskCreateForm from "./task-create-form";
+import TaskItem from "./task-item";
 
-type Task = Database['public']['Tables']['tasks']['Row']
+type Task = Database["public"]["Tables"]["tasks"]["Row"];
 
 interface TaskListProps {
-  tasks: Task[]
-  questSessionId?: string
-  selectedDate?: string
+  tasks: Task[];
+  questSessionId?: string;
+  selectedDate?: string;
 }
 
 export default function TaskList({
   tasks,
   questSessionId,
-  selectedDate
+  selectedDate,
 }: TaskListProps) {
-  const [showCreateForm, setShowCreateForm] = useState(false)
-  const { optimisticUpdate, optimisticAdd, optimisticDelete, revalidate } = useTaskMutations(questSessionId, selectedDate)
+  const [showCreateForm, setShowCreateForm] = useState(false);
+  const { optimisticUpdate, optimisticAdd, optimisticDelete, revalidate } =
+    useTaskMutations(questSessionId, selectedDate);
 
   const handleTaskCreate = (newTask: Task) => {
-    optimisticAdd(newTask)
-    setShowCreateForm(false)
-    revalidate()
-  }
+    optimisticAdd(newTask);
+    setShowCreateForm(false);
+    revalidate();
+  };
 
-  const completedTasks = tasks.filter(task => task.completed)
-  const incompleteTasks = tasks.filter(task => !task.completed)
+  const completedTasks = tasks.filter((task) => task.completed);
+  const incompleteTasks = tasks.filter((task) => !task.completed);
 
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-lg font-semibold text-gray-900">
-          {selectedDate ? `${selectedDate} のタスク` : 'すべてのタスク'}
+          {selectedDate ? `${selectedDate} のタスク` : "すべてのタスク"}
         </h2>
         <button
           onClick={() => setShowCreateForm(true)}
@@ -50,7 +51,9 @@ export default function TaskList({
         <div className="bg-gray-200 rounded-full h-2">
           <div
             className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-            style={{ width: `${(completedTasks.length / tasks.length) * 100}%` }}
+            style={{
+              width: `${(completedTasks.length / tasks.length) * 100}%`,
+            }}
           />
         </div>
       )}
@@ -110,5 +113,5 @@ export default function TaskList({
         />
       )}
     </div>
-  )
+  );
 }

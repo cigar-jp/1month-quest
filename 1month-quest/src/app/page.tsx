@@ -1,28 +1,36 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import ProtectedRoute from '@/components/auth/protected-route'
-import Header from '@/components/layout/header'
-import QuestCreateForm from '@/components/quest/quest-create-form'
-import TaskList from '@/components/tasks/task-list'
-import { useActiveQuest } from '@/hooks/useQuests'
-import { useTasks } from '@/hooks/useTasks'
-import Link from 'next/link'
+import Link from "next/link";
+import { useState } from "react";
+import ProtectedRoute from "@/components/auth/protected-route";
+import Header from "@/components/layout/header";
+import QuestCreateForm from "@/components/quest/quest-create-form";
+import TaskList from "@/components/tasks/task-list";
+import { useActiveQuest } from "@/hooks/useQuests";
+import { useTasks } from "@/hooks/useTasks";
 
 export default function Home() {
-  const [showQuestForm, setShowQuestForm] = useState(false)
-  const today = new Date().toISOString().split('T')[0]
+  const [showQuestForm, setShowQuestForm] = useState(false);
+  const today = new Date().toISOString().split("T")[0];
 
-  const { quest: activeQuest, isLoading: questLoading, mutate: mutateQuest } = useActiveQuest()
-  const { tasks: todayTasks, isLoading: tasksLoading, mutate: mutateTasks } = useTasks(activeQuest?.id, today)
+  const {
+    quest: activeQuest,
+    isLoading: questLoading,
+    mutate: mutateQuest,
+  } = useActiveQuest();
+  const {
+    tasks: todayTasks,
+    isLoading: tasksLoading,
+    mutate: mutateTasks,
+  } = useTasks(activeQuest?.id, today);
 
   const handleQuestCreated = () => {
-    setShowQuestForm(false)
-    mutateQuest() // Revalidate quest data
-    mutateTasks() // Revalidate tasks data
-  }
+    setShowQuestForm(false);
+    mutateQuest(); // Revalidate quest data
+    mutateTasks(); // Revalidate tasks data
+  };
 
-  const isLoading = questLoading || tasksLoading
+  const isLoading = questLoading || tasksLoading;
 
   if (isLoading) {
     return (
@@ -34,7 +42,7 @@ export default function Home() {
           </div>
         </div>
       </ProtectedRoute>
-    )
+    );
   }
 
   return (
@@ -48,7 +56,7 @@ export default function Home() {
                 <h1 className="text-2xl font-bold text-gray-900 mb-4">
                   1ヶ月クエスト型成長ToDoアプリ
                 </h1>
-                
+
                 {activeQuest ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                     <div className="bg-blue-50 p-4 rounded-lg">
@@ -62,7 +70,7 @@ export default function Home() {
                         期間: {activeQuest.start_date} ～ {activeQuest.end_date}
                       </div>
                     </div>
-                    
+
                     <div className="bg-green-50 p-4 rounded-lg">
                       <h3 className="text-lg font-semibold text-green-900 mb-2">
                         今日のタスク
@@ -70,7 +78,7 @@ export default function Home() {
                       <p className="text-green-700 text-sm mb-4">
                         今日やるべきタスクを確認し、進捗を更新しましょう。
                       </p>
-                      <Link 
+                      <Link
                         href="/checkin"
                         className="inline-block bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors"
                       >
@@ -87,6 +95,7 @@ export default function Home() {
                       30日間の目標を設定して、新しいクエストを始めましょう。
                     </p>
                     <button
+                      type="button"
                       onClick={() => setShowQuestForm(true)}
                       className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
                     >
