@@ -11,7 +11,7 @@
 		"format": "biome format ./src",
 		"format:fix": "biome format --write ./src",
 		"check": "biome check ./src",
-		"check:fix": "biome check --apply ./src"
+		"check:fix": "biome check --write ./src"
 	},
 	"dependencies": {
 		"@supabase/ssr": "^0.6.1",
