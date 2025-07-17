@@ -6,7 +6,7 @@ type TaskInsert = Database['public']['Tables']['tasks']['Insert']
 type TaskUpdate = Database['public']['Tables']['tasks']['Update']
 
 export async function createTask(data: TaskInsert) {
-  const supabase = createClient()
+  const supabase = await createClient()
   
   const { data: task, error } = await supabase
     .from('tasks')
@@ -19,7 +19,7 @@ export async function createTask(data: TaskInsert) {
 }
 
 export async function getTasks(userId: string, questSessionId?: string) {
-  const supabase = createClient()
+  const supabase = await createClient()
   
   let query = supabase
     .from('tasks')
@@ -38,7 +38,7 @@ export async function getTasks(userId: string, questSessionId?: string) {
 }
 
 export async function getTasksByDate(userId: string, date: string) {
-  const supabase = createClient()
+  const supabase = await createClient()
   
   const { data, error } = await supabase
     .from('tasks')
@@ -52,7 +52,7 @@ export async function getTasksByDate(userId: string, date: string) {
 }
 
 export async function updateTask(id: string, data: TaskUpdate) {
-  const supabase = createClient()
+  const supabase = await createClient()
   
   const { data: task, error } = await supabase
     .from('tasks')
@@ -66,7 +66,7 @@ export async function updateTask(id: string, data: TaskUpdate) {
 }
 
 export async function deleteTask(id: string) {
-  const supabase = createClient()
+  const supabase = await createClient()
   
   const { error } = await supabase
     .from('tasks')
@@ -77,7 +77,7 @@ export async function deleteTask(id: string) {
 }
 
 export async function toggleTaskCompletion(id: string, completed: boolean) {
-  const supabase = createClient()
+  const supabase = await createClient()
   
   const { data: task, error } = await supabase
     .from('tasks')
@@ -114,7 +114,7 @@ export async function generateQuestTasks(
     })
   }
   
-  const supabase = createClient()
+  const supabase = await createClient()
   const { data, error } = await supabase
     .from('tasks')
     .insert(tasks)

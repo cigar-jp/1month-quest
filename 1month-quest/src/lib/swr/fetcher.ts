@@ -1,5 +1,7 @@
 export const fetcher = async (url: string) => {
-  const response = await fetch(url)
+  const response = await fetch(url, {
+    credentials: 'same-origin'
+  })
   
   if (!response.ok) {
     let errorInfo = {}
@@ -26,6 +28,7 @@ export const mutationFetcher = async (url: string, { arg }: { arg: any }) => {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(arg),
+    credentials: 'same-origin'
   })
   
   if (!response.ok) {
@@ -52,6 +55,7 @@ export const updateFetcher = async (url: string, { arg }: { arg: any }) => {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(arg),
+    credentials: 'same-origin'
   })
   
   if (!response.ok) {
@@ -74,6 +78,7 @@ export const updateFetcher = async (url: string, { arg }: { arg: any }) => {
 export const deleteFetcher = async (url: string) => {
   const response = await fetch(url, {
     method: 'DELETE',
+    credentials: 'same-origin'
   })
   
   if (!response.ok) {
@@ -100,6 +105,7 @@ export const patchFetcher = async (url: string, { arg }: { arg: any }) => {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(arg),
+    credentials: 'same-origin'
   })
   
   if (!response.ok) {
