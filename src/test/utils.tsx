@@ -1,16 +1,15 @@
 import { render, RenderOptions } from "@testing-library/react";
 import { ReactElement } from "react";
-import { AuthProvider } from "@/contexts/auth-context";
 
-// テスト用のカスタムレンダー
-const AllTheProviders = ({ children }: { children: React.ReactNode }) => {
-  return <AuthProvider>{children}</AuthProvider>;
+// テスト用のシンプルなプロバイダー
+const TestProviders = ({ children }: { children: React.ReactNode }) => {
+  return <div data-testid="test-wrapper">{children}</div>;
 };
 
 const customRender = (
   ui: ReactElement,
   options?: Omit<RenderOptions, "wrapper">,
-) => render(ui, { wrapper: AllTheProviders, ...options });
+) => render(ui, { wrapper: TestProviders, ...options });
 
 export * from "@testing-library/react";
 export { customRender as render };

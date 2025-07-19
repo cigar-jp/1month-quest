@@ -1,10 +1,15 @@
 import "@testing-library/jest-dom";
-import { afterEach } from "vitest";
+import { afterEach, beforeEach, vi } from "vitest";
 import { cleanup } from "@testing-library/react";
 
 // テスト後のクリーンアップ
 afterEach(() => {
   cleanup();
+});
+
+beforeEach(() => {
+  // 各テスト前にすべてのモックをリセット
+  vi.clearAllMocks();
 });
 
 // Mock環境変数
@@ -15,12 +20,16 @@ process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = "test-key";
 vi.mock("@/lib/supabase/client", () => ({
   supabase: {
     auth: {
-      getUser: vi.fn(),
+      getUser: vi.fn(() => Promise.resolve({ data: { user: null }, error: null })),
       getSession: vi.fn(() => Promise.resolve({ data: { session: null }, error: null })),
-      signInWithPassword: vi.fn(),
-      signUp: vi.fn(),
-      signOut: vi.fn(),
-      onAuthStateChange: vi.fn(() => ({ data: { subscription: { unsubscribe: vi.fn() } } })),
+      signInWithPassword: vi.fn(() => Promise.resolve({ data: { user: null, session: null }, error: null })),
+      signUp: vi.fn(() => Promise.resolve({ data: { user: null, session: null }, error: null })),
+      signOut: vi.fn(() => Promise.resolve({ error: null })),
+      onAuthStateChange: vi.fn((callback) => {
+        // すぐにコールバックを呼び出して初期状態を設定
+        callback('SIGNED_OUT', null);
+        return { data: { subscription: { unsubscribe: vi.fn() } } };
+      }),
     },
     from: vi.fn(() => ({
       select: vi.fn().mockReturnThis(),
@@ -29,7 +38,7 @@ vi.mock("@/lib/supabase/client", () => ({
       delete: vi.fn().mockReturnThis(),
       eq: vi.fn().mockReturnThis(),
       order: vi.fn().mockReturnThis(),
-      single: vi.fn(),
+      single: vi.fn(() => Promise.resolve({ data: null, error: null })),
     })),
   },
 }));
