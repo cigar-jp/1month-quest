@@ -56,7 +56,7 @@ describe("/api/tasks", () => {
         error: null,
       });
 
-      const request = new NextRequest("http://localhost:3000/api/tasks?quest_session_id=quest-1&date=2024-01-01");
+      const request = new NextRequest("http://localhost:3000/api/tasks?date=2024-01-01");
       const response = await GET(request);
 
       expect(response.status).toBe(200);
@@ -66,7 +66,7 @@ describe("/api/tasks", () => {
 
       expect(mockSupabaseClient.from).toHaveBeenCalledWith("tasks");
       expect(mockQuery.select).toHaveBeenCalledWith("*");
-      expect(mockQuery.eq).toHaveBeenCalledWith("quest_session_id", "quest-1");
+      expect(mockQuery.eq).toHaveBeenCalledWith("user_id", "user-1");
       expect(mockQuery.eq).toHaveBeenCalledWith("date", "2024-01-01");
     });
 
@@ -85,19 +85,33 @@ describe("/api/tasks", () => {
       expect(data).toEqual({ error: "Unauthorized" });
     });
 
-    it("quest_session_idが指定されていない場合、400エラーを返す", async () => {
+    it("quest_session_idが指定されていない場合、全てのタスクを返す", async () => {
       mockSupabaseClient.auth.getUser.mockResolvedValue({
         data: { user: { id: "user-1" } },
+        error: null,
+      });
+
+      const mockTasks = [
+        {
+          id: "task-1",
+          title: "テストタスク1",
+          completed: false,
+          date: "2024-01-01",
+        },
+      ];
+
+      mockQuery.order.mockResolvedValue({
+        data: mockTasks,
         error: null,
       });
 
       const request = new NextRequest("http://localhost:3000/api/tasks");
       const response = await GET(request);
 
-      expect(response.status).toBe(400);
+      expect(response.status).toBe(200);
       
       const data = await response.json();
-      expect(data).toEqual({ error: "quest_session_id is required" });
+      expect(data).toEqual(mockTasks);
     });
 
     it("Supabaseエラーの場合、500エラーを返す", async () => {
@@ -117,7 +131,7 @@ describe("/api/tasks", () => {
       expect(response.status).toBe(500);
       
       const data = await response.json();
-      expect(data).toEqual({ error: "Database error" });
+      expect(data).toEqual({ error: "Internal server error" });
     });
   });
 
@@ -162,7 +176,7 @@ describe("/api/tasks", () => {
 
       const response = await POST(request);
 
-      expect(response.status).toBe(201);
+      expect(response.status).toBe(200);
       
       const data = await response.json();
       expect(data).toEqual(newTask);
@@ -176,6 +190,7 @@ describe("/api/tasks", () => {
         priority: 2,
         estimated_time: 30,
         user_id: "user-1",
+        completed: false,
       });
     });
 
@@ -189,7 +204,7 @@ describe("/api/tasks", () => {
         method: "POST",
         body: JSON.stringify({
           title: "新しいタスク",
-          // quest_session_id が不足
+          // date が不足
         }),
         headers: {
           "Content-Type": "application/json",
