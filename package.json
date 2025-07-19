@@ -11,7 +11,11 @@
 		"format": "biome format ./src",
 		"format:fix": "biome format --write ./src",
 		"check": "biome check ./src",
-		"check:fix": "biome check --write ./src"
+		"check:fix": "biome check --write ./src",
+		"test": "vitest",
+		"test:watch": "vitest --watch",
+		"test:coverage": "vitest --coverage",
+		"test:ui": "vitest --ui"
 	},
 	"dependencies": {
 		"@supabase/ssr": "^0.6.1",
@@ -25,10 +29,16 @@
 	"devDependencies": {
 		"@biomejs/biome": "^2.1.1",
 		"@tailwindcss/postcss": "^4",
+		"@testing-library/jest-dom": "^6.6.3",
+		"@testing-library/react": "^16.3.0",
+		"@testing-library/user-event": "^14.6.1",
 		"@types/node": "^20",
 		"@types/react": "^19",
 		"@types/react-dom": "^19",
+		"@vitejs/plugin-react": "^4.7.0",
+		"jsdom": "^26.1.0",
 		"tailwindcss": "^4",
-		"typescript": "^5"
+		"typescript": "^5",
+		"vitest": "^3.2.4"
 	}
 }
