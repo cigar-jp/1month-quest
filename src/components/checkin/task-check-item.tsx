@@ -24,7 +24,7 @@ export default function TaskCheckItem({
 
   const { toggleTask, isToggling } = useToggleTask(task.id);
   const { optimisticUpdate } = useTaskMutations(
-    task.quest_session_id,
+    task.quest_session_id || undefined,
     task.date,
   );
 
