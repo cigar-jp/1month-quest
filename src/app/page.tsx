@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import ProtectedRoute from "@/components/auth/protected-route";
 import Header from "@/components/layout/header";
+import ProgressDashboard from "@/components/progress/progress-dashboard";
 import QuestCreateForm from "@/components/quest/quest-create-form";
 import TaskList from "@/components/tasks/task-list";
 import { useActiveQuest } from "@/hooks/useQuests";
@@ -105,6 +106,13 @@ export default function Home() {
                 )}
               </div>
             </div>
+
+            {/* Progress Dashboard */}
+            {activeQuest && (
+              <div className="mb-6">
+                <ProgressDashboard quest={activeQuest} />
+              </div>
+            )}
 
             {/* Today's Tasks */}
             <div className="bg-white overflow-hidden shadow rounded-lg">
