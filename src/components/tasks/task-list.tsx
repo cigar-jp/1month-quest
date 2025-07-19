@@ -33,15 +33,15 @@ export default function TaskList({
   const incompleteTasks = tasks.filter((task) => !task.completed);
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-lg font-semibold text-gray-900">
+    <div className="space-y-4 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+        <h2 className="text-base sm:text-lg font-semibold text-gray-900">
           {selectedDate ? `${selectedDate} のタスク` : "すべてのタスク"}
         </h2>
         <button
           type="button"
           onClick={() => setShowCreateForm(true)}
-          className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
+          className="bg-blue-600 text-white px-3 sm:px-4 py-2 rounded-md hover:bg-blue-700 transition-colors text-sm w-full sm:w-auto"
         >
           新しいタスクを追加
         </button>
@@ -60,10 +60,10 @@ export default function TaskList({
       )}
 
       {/* Task sections */}
-      <div className="space-y-4">
+      <div className="space-y-3 sm:space-y-4">
         {incompleteTasks.length > 0 && (
           <div>
-            <h3 className="text-sm font-medium text-gray-700 mb-2">
+            <h3 className="text-xs sm:text-sm font-medium text-gray-700 mb-2">
               未完了のタスク ({incompleteTasks.length})
             </h3>
             <div className="space-y-2">
@@ -81,7 +81,7 @@ export default function TaskList({
 
         {completedTasks.length > 0 && (
           <div>
-            <h3 className="text-sm font-medium text-gray-700 mb-2">
+            <h3 className="text-xs sm:text-sm font-medium text-gray-700 mb-2">
               完了したタスク ({completedTasks.length})
             </h3>
             <div className="space-y-2">
@@ -98,9 +98,9 @@ export default function TaskList({
         )}
 
         {tasks.length === 0 && (
-          <div className="text-center py-8 text-gray-500">
-            <p>まだタスクがありません</p>
-            <p className="text-sm">新しいタスクを追加してください</p>
+          <div className="text-center py-6 sm:py-8 text-gray-500">
+            <p className="text-sm">まだタスクがありません</p>
+            <p className="text-xs sm:text-sm">新しいタスクを追加してください</p>
           </div>
         )}
       </div>

@@ -110,28 +110,28 @@ export default function TaskItem({
 
   if (isEditing) {
     return (
-      <div className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+      <div className="bg-white p-3 sm:p-4 rounded-lg border border-gray-200 shadow-sm">
         <div className="space-y-3">
           <input
             type="text"
             value={editTitle}
             onChange={(e) => setEditTitle(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="タスクタイトル"
           />
 
           <textarea
             value={editDescription}
             onChange={(e) => setEditDescription(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="説明（任意）"
             rows={2}
           />
 
-          <div className="flex items-center gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
             <label
               htmlFor="priority-select"
-              className="text-sm font-medium text-gray-700"
+              className="text-xs sm:text-sm font-medium text-gray-700"
             >
               優先度:
             </label>
@@ -139,7 +139,7 @@ export default function TaskItem({
               id="priority-select"
               value={editPriority}
               onChange={(e) => setEditPriority(Number(e.target.value))}
-              className="px-3 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="px-3 py-1 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value={1}>高</option>
               <option value={2}>中</option>
@@ -151,14 +151,14 @@ export default function TaskItem({
             <button
               type="button"
               onClick={handleSave}
-              className="px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm"
+              className="flex-1 sm:flex-none px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm"
             >
               保存
             </button>
             <button
               type="button"
               onClick={handleCancel}
-              className="px-3 py-1 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 text-sm"
+              className="flex-1 sm:flex-none px-3 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 text-sm"
             >
               キャンセル
             </button>
@@ -170,7 +170,7 @@ export default function TaskItem({
 
   return (
     <div
-      className={`bg-white p-4 rounded-lg border border-gray-200 shadow-sm ${task.completed ? "opacity-75" : ""}`}
+      className={`bg-white p-3 sm:p-4 rounded-lg border border-gray-200 shadow-sm ${task.completed ? "opacity-75" : ""}`}
     >
       <div className="flex items-start gap-3">
         <input
@@ -178,18 +178,18 @@ export default function TaskItem({
           checked={task.completed}
           onChange={(e) => handleToggle(e.target.checked)}
           disabled={isToggling}
-          className="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded disabled:opacity-50"
+          className="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded disabled:opacity-50 flex-shrink-0"
         />
 
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-1">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 mb-1">
             <h3
-              className={`text-sm font-medium ${task.completed ? "line-through text-gray-500" : "text-gray-900"}`}
+              className={`text-sm font-medium ${task.completed ? "line-through text-gray-500" : "text-gray-900"} break-words`}
             >
               {task.title}
             </h3>
             <span
-              className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getPriorityColor(task.priority)}`}
+              className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getPriorityColor(task.priority)} w-fit`}
             >
               {getPriorityText(task.priority)}
             </span>
@@ -197,13 +197,13 @@ export default function TaskItem({
 
           {task.description && (
             <p
-              className={`text-sm ${task.completed ? "line-through text-gray-400" : "text-gray-600"}`}
+              className={`text-xs sm:text-sm ${task.completed ? "line-through text-gray-400" : "text-gray-600"} break-words`}
             >
               {task.description}
             </p>
           )}
 
-          <div className="flex items-center gap-4 mt-2 text-xs text-gray-500">
+          <div className="flex flex-wrap gap-2 sm:gap-4 mt-2 text-xs text-gray-500">
             <span>作成: {new Date(task.created_at).toLocaleDateString()}</span>
             {task.estimated_time && <span>予定: {task.estimated_time}分</span>}
             {task.actual_time && <span>実績: {task.actual_time}分</span>}
@@ -215,12 +215,12 @@ export default function TaskItem({
           </div>
         </div>
 
-        <div className="flex gap-1">
+        <div className="flex gap-1 flex-shrink-0">
           <button
             type="button"
             onClick={() => setIsEditing(true)}
             disabled={isUpdating}
-            className="p-1 text-gray-400 hover:text-blue-600 transition-colors disabled:opacity-50"
+            className="p-2 text-gray-400 hover:text-blue-600 transition-colors disabled:opacity-50 touch-manipulation"
             title="編集"
           >
             <svg
@@ -245,7 +245,7 @@ export default function TaskItem({
             type="button"
             onClick={handleDelete}
             disabled={isDeleting}
-            className="p-1 text-gray-400 hover:text-red-600 transition-colors disabled:opacity-50"
+            className="p-2 text-gray-400 hover:text-red-600 transition-colors disabled:opacity-50 touch-manipulation"
             title="削除"
           >
             <svg

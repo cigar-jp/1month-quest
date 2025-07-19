@@ -122,27 +122,27 @@ export default function CalendarView({
   const weekDays = ["日", "月", "火", "水", "木", "金", "土"];
 
   return (
-    <div className="bg-white rounded-lg p-4 shadow-sm">
-      <div className="mb-4">
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">
+    <div className="bg-white rounded-lg p-3 sm:p-4 shadow-sm">
+      <div className="mb-3 sm:mb-4">
+        <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">
           クエストカレンダー
         </h3>
-        <div className="flex items-center gap-4 text-xs">
+        <div className="grid grid-cols-2 sm:flex sm:items-center gap-2 sm:gap-4 text-xs">
           <div className="flex items-center gap-1">
-            <div className="w-3 h-3 bg-green-500 rounded-full" />
-            <span>完了 (100%)</span>
+            <div className="w-3 h-3 bg-green-500 rounded-full flex-shrink-0" />
+            <span className="truncate">完了 (100%)</span>
           </div>
           <div className="flex items-center gap-1">
-            <div className="w-3 h-3 bg-yellow-300 rounded-full" />
-            <span>進行中 (60-99%)</span>
+            <div className="w-3 h-3 bg-yellow-300 rounded-full flex-shrink-0" />
+            <span className="truncate">進行中 (60-99%)</span>
           </div>
           <div className="flex items-center gap-1">
-            <div className="w-3 h-3 bg-red-300 rounded-full" />
-            <span>未完了 (1-59%)</span>
+            <div className="w-3 h-3 bg-red-300 rounded-full flex-shrink-0" />
+            <span className="truncate">未完了 (1-59%)</span>
           </div>
           <div className="flex items-center gap-1">
-            <div className="w-3 h-3 bg-gray-200 rounded-full" />
-            <span>タスクなし</span>
+            <div className="w-3 h-3 bg-gray-200 rounded-full flex-shrink-0" />
+            <span className="truncate">タスクなし</span>
           </div>
         </div>
       </div>
@@ -152,7 +152,7 @@ export default function CalendarView({
         {weekDays.map((day) => (
           <div
             key={day}
-            className="h-8 flex items-center justify-center text-xs font-medium text-gray-500"
+            className="h-6 sm:h-8 flex items-center justify-center text-xs font-medium text-gray-500"
           >
             {day}
           </div>
@@ -165,19 +165,22 @@ export default function CalendarView({
           <button
             key={day.date}
             type="button"
-            className={getDayClassName(day)}
+            className={getDayClassName(day).replace(
+              "w-10 h-10",
+              "w-8 h-8 sm:w-10 sm:h-10",
+            )}
             onClick={() => handleDayClick(day)}
             disabled={!day.isInRange}
             title={`${day.date}: ${day.completedTasks}/${day.totalTasks} タスク完了`}
             aria-label={`${day.date}: ${day.completedTasks}/${day.totalTasks} タスク完了`}
           >
-            <span className="flex items-center justify-center w-full h-full">
+            <span className="flex items-center justify-center w-full h-full text-xs sm:text-sm">
               {day.dayOfMonth}
             </span>
 
             {/* Task indicator dots */}
             {day.totalTasks > 0 && (
-              <div className="absolute bottom-0 right-0 w-2 h-2 bg-white rounded-full opacity-80" />
+              <div className="absolute bottom-0 right-0 w-1.5 h-1.5 sm:w-2 sm:h-2 bg-white rounded-full opacity-80" />
             )}
           </button>
         ))}
@@ -185,21 +188,23 @@ export default function CalendarView({
 
       {/* Selected date info */}
       {selectedDate && (
-        <div className="mt-4 p-3 bg-gray-50 rounded-lg">
-          <h4 className="font-medium text-gray-900 mb-1">{selectedDate}</h4>
+        <div className="mt-3 sm:mt-4 p-2 sm:p-3 bg-gray-50 rounded-lg">
+          <h4 className="font-medium text-gray-900 mb-1 text-sm">
+            {selectedDate}
+          </h4>
           {(() => {
             const selectedDay = calendarData.find(
               (day) => day.date === selectedDate,
             );
             if (!selectedDay || selectedDay.totalTasks === 0) {
               return (
-                <p className="text-sm text-gray-600">
+                <p className="text-xs sm:text-sm text-gray-600">
                   この日にはタスクがありません
                 </p>
               );
             }
             return (
-              <p className="text-sm text-gray-600">
+              <p className="text-xs sm:text-sm text-gray-600">
                 {selectedDay.completedTasks}/{selectedDay.totalTasks} タスク完了
                 ({Math.round(selectedDay.completionRate)}%)
               </p>
