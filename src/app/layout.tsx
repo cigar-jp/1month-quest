@@ -17,6 +17,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "1ヶ月クエスト型成長ToDoアプリ",
   description: "30日間のクエスト型タスク管理アプリ",
+  viewport: "width=device-width, initial-scale=1",
 };
 
 export default function RootLayout({
